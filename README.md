@@ -31,3 +31,7 @@ export default ({ items }) => (
   </DataDam>
 )
 ```
+
+---
+
+A [(╯°□°）╯︵TABLEFLIP](https://tableflip.io) side project.
