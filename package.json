@@ -1,0 +1,61 @@
+{
+  "name": "react-data-dam",
+  "version": "0.0.0",
+  "description": "Holds back your data until you're ready to see the updates.",
+  "main": "lib/index.js",
+  "scripts": {
+    "build": "run-p build:*",
+    "build:js": "babel src --out-dir lib",
+    "test": "run-s lint test:*",
+    "test:ava": "nyc ava",
+    "lint": "standard",
+    "clean": "rm -rf lib/**"
+  },
+  "keywords": [
+    "dam",
+    "buffer",
+    "diff",
+    "react"
+  ],
+  "author": "Alan Shaw",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/tableflip/react-data-dam.git"
+  },
+  "bugs": {
+    "url": "https://github.com/tableflip/react-data-dam/issues"
+  },
+  "homepage": "https://github.com/tableflip/react-data-dam#readme",
+  "dependencies": {
+    "fast-deep-equal": "^1.0.0",
+    "generic-diff": "^1.0.1",
+    "prop-types": "^15.6.0"
+  },
+  "devDependencies": {
+    "ava": "^0.23.0",
+    "babel-cli": "^6.26.0",
+    "babel-eslint": "^8.0.2",
+    "babel-preset-env": "^1.6.1",
+    "babel-preset-react": "^6.24.1",
+    "babel-preset-stage-2": "^6.24.1",
+    "enzyme": "^3.2.0",
+    "enzyme-adapter-react-16": "^1.1.0",
+    "npm-run-all": "^4.1.2",
+    "react": "^16.1.1",
+    "react-dom": "^16.1.1",
+    "standard": "^10.0.3"
+  },
+  "peerDependencies": {
+    "react": "*"
+  },
+  "standard": {
+    "parser": "babel-eslint"
+  },
+  "ava": {
+    "require": [
+      "babel-register"
+    ],
+    "babel": "inherit"
+  }
+}
