@@ -1,1 +1,1 @@
-export { DataDam } from './DataDam'
+export { default as DataDam } from './DataDam'
