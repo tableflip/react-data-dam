@@ -1,6 +1,6 @@
 # react-data-dam
 
-[![dependencies Status](https://david-dm.org/tableflip/react-data-dam/status.svg)](https://david-dm.org/tableflip/react-data-dam) [![JavaScript Style Guide](https://img.shields.io/badge/code_style-standard-brightgreen.svg)](https://standardjs.com)
+[![Build Status](https://travis-ci.org/tableflip/react-data-dam.svg?branch=master)](https://travis-ci.org/tableflip/react-data-dam) [![dependencies Status](https://david-dm.org/tableflip/react-data-dam/status.svg)](https://david-dm.org/tableflip/react-data-dam) [![JavaScript Style Guide](https://img.shields.io/badge/code_style-standard-brightgreen.svg)](https://standardjs.com)
 
 > Holds back your data until you're ready to see the updates. Useful for implementing a Twitter style "See n new Tweets" button.
 
