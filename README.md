@@ -1,3 +1,5 @@
+<img src="https://user-images.githubusercontent.com/152863/33171665-06ce78d6-d045-11e7-8dd7-80fecd7a9ad1.png" width="150" />
+
 # react-data-dam
 
 [![Build Status](https://travis-ci.org/tableflip/react-data-dam.svg?branch=master)](https://travis-ci.org/tableflip/react-data-dam) [![dependencies Status](https://david-dm.org/tableflip/react-data-dam/status.svg)](https://david-dm.org/tableflip/react-data-dam) [![JavaScript Style Guide](https://img.shields.io/badge/code_style-standard-brightgreen.svg)](https://standardjs.com)
