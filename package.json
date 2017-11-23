@@ -9,7 +9,8 @@
     "test": "run-s lint test:*",
     "test:ava": "nyc ava",
     "lint": "standard",
-    "clean": "rm -rf lib/**"
+    "clean": "rm -rf lib/**",
+    "prepublishOnly": "run-s build"
   },
   "keywords": [
     "dam",
