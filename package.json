@@ -7,7 +7,7 @@
     "build": "run-p build:*",
     "build:js": "babel src --out-dir lib",
     "test": "run-s lint test:*",
-    "test:ava": "nyc ava",
+    "test:ava": "nyc --reporter=lcov --reporter=text ava",
     "lint": "standard",
     "clean": "rm -rf lib/**",
     "prepublishOnly": "run-s build"
@@ -29,6 +29,7 @@
   },
   "homepage": "https://github.com/tableflip/react-data-dam#readme",
   "dependencies": {
+    "clone": "^2.1.1",
     "fast-deep-equal": "^1.0.0",
     "generic-diff": "^1.0.1",
     "prop-types": "^15.6.0"

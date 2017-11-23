@@ -2,7 +2,10 @@ import test from 'ava'
 import { shallow, configure } from 'enzyme'
 import React from 'react'
 import Adapter from 'enzyme-adapter-react-16'
+import clone from 'clone'
 import DataDam from '../src/DataDam'
+import { NoDiff } from '../src/diff'
+import testData from './fixtures/test-data'
 
 configure({ adapter: new Adapter() })
 
@@ -24,7 +27,7 @@ test('should pass LIVE data to children when flowing', (t) => {
     <DataDam data={data} flowing>
       {(data) => {
         // Take a copy of the data passed to us
-        passedData = Array.from(data)
+        passedData = clone(data)
       }}
     </DataDam>
   )
@@ -41,7 +44,7 @@ test('should pass LIVE data to children when flowing', (t) => {
 
 test('should not pass LIVE data to children when not flowing', (t) => {
   const data = testData()
-  const originalData = Array.from(data)
+  const originalData = clone(data)
 
   let passedData = null
 
@@ -49,7 +52,7 @@ test('should not pass LIVE data to children when not flowing', (t) => {
     <DataDam data={data} flowing={false}>
       {(data) => {
         // Take a copy of the data passed to us
-        passedData = Array.from(data)
+        passedData = clone(data)
       }}
     </DataDam>
   )
@@ -66,7 +69,7 @@ test('should not pass LIVE data to children when not flowing', (t) => {
 
 test('should stop passing LIVE data to children after stop flowing', (t) => {
   const data = testData()
-  const originalData = Array.from(data)
+  const originalData = clone(data)
 
   let passedData = null
 
@@ -74,7 +77,7 @@ test('should stop passing LIVE data to children after stop flowing', (t) => {
     <DataDam data={data} flowing>
       {(data) => {
         // Take a copy of the data passed to us
-        passedData = Array.from(data)
+        passedData = clone(data)
       }}
     </DataDam>
   )
@@ -92,7 +95,7 @@ test('should stop passing LIVE data to children after stop flowing', (t) => {
 
 test('should pass LIVE data to children when release is called', (t) => {
   const data = testData()
-  const originalData = Array.from(data)
+  const originalData = clone(data)
 
   let passedData = null
   let passedRelease = null
@@ -101,7 +104,7 @@ test('should pass LIVE data to children when release is called', (t) => {
     <DataDam data={data}>
       {(data, diff, release) => {
         // Take a copy of the data passed to us
-        passedData = Array.from(data)
+        passedData = clone(data)
         passedRelease = release
       }}
     </DataDam>
@@ -131,9 +134,9 @@ test('should pass LIVE data to children when release is called', (t) => {
   t.deepEqual(passedData, data)
 })
 
-test('should correctly diff the changes', (t) => {
+test('should correctly diff 1 add, 1 delete and 1 update', (t) => {
   const data = testData()
-  const originalData = Array.from(data)
+  const originalData = clone(data)
 
   let passedData = null
   let passedDiff = null
@@ -142,7 +145,7 @@ test('should correctly diff the changes', (t) => {
     <DataDam data={data}>
       {(data, diff) => {
         // Take a copy of the data passed to us
-        passedData = Array.from(data)
+        passedData = clone(data)
         passedDiff = diff
       }}
     </DataDam>
@@ -155,11 +158,14 @@ test('should correctly diff the changes', (t) => {
   data.splice(0, 1)
 
   // Add a new item
-  const newItem = { _id: `another${Date.now()}`, name: 'Another' }
-  data.push(newItem)
+  const newItems = [
+    { _id: `another${Date.now()}`, name: 'Another' }
+  ]
+
+  data.push(...newItems)
 
   // Update the second item
-  data[0] = Object.assign({}, data[0], { name: `name${Date.now()}` })
+  data[0].name = `name${Date.now()}`
 
   wrapper.setProps({ data })
 
@@ -167,7 +173,7 @@ test('should correctly diff the changes', (t) => {
   t.deepEqual(passedData, originalData)
 
   t.is(passedDiff.added.length, 1)
-  t.deepEqual(passedDiff.added[0], newItem)
+  t.deepEqual(passedDiff.added[0], newItems[0])
 
   t.is(passedDiff.removed.length, 1)
   t.deepEqual(passedDiff.removed[0], originalData[0])
@@ -181,10 +187,127 @@ test('should correctly diff the changes', (t) => {
   t.is(passedDiff.total.updated, 1)
 })
 
-function testData () {
-  return [
-    { _id: 'one', name: 'First' },
-    { _id: 'two', name: 'Second' },
-    { _id: 'three', name: 'Third' }
+test('should correctly diff 2 adds and 1 delete', (t) => {
+  const data = testData()
+  const originalData = clone(data)
+
+  let passedData = null
+  let passedDiff = null
+
+  const wrapper = shallow(
+    <DataDam data={data}>
+      {(data, diff) => {
+        // Take a copy of the data passed to us
+        passedData = clone(data)
+        passedDiff = diff
+      }}
+    </DataDam>
+  )
+
+  // Ensure data and passedData are now the same
+  t.deepEqual(passedData, data)
+
+  // Remove the first item
+  data.splice(0, 1)
+
+  // Add a new item
+  const newItems = [
+    { _id: `another1${Date.now()}`, name: 'Another 1' },
+    { _id: `another2${Date.now()}`, name: 'Another 2' }
   ]
-}
+
+  data.push(...newItems)
+
+  wrapper.setProps({ data })
+
+  // Ensure passedData is still original data
+  t.deepEqual(passedData, originalData)
+
+  t.is(passedDiff.added.length, 2)
+  t.deepEqual(passedDiff.added[0], newItems[0])
+  t.deepEqual(passedDiff.added[1], newItems[1])
+
+  t.is(passedDiff.removed.length, 1)
+  t.deepEqual(passedDiff.removed[0], originalData[0])
+
+  t.is(passedDiff.total.changes, 3)
+  t.is(passedDiff.total.added, 2)
+  t.is(passedDiff.total.removed, 1)
+  t.is(passedDiff.total.updated, 0)
+})
+
+test('should correctly diff 1 add and 2 deletes', (t) => {
+  const data = testData()
+  const originalData = clone(data)
+
+  let passedData = null
+  let passedDiff = null
+
+  const wrapper = shallow(
+    <DataDam data={data}>
+      {(data, diff) => {
+        // Take a copy of the data passed to us
+        passedData = clone(data)
+        passedDiff = diff
+      }}
+    </DataDam>
+  )
+
+  // Ensure data and passedData are now the same
+  t.deepEqual(passedData, data)
+
+  // Remove the first 2 items
+  data.splice(0, 2)
+
+  // Add a new item
+  const newItems = [
+    { _id: `another1${Date.now()}`, name: 'Another 1' }
+  ]
+
+  data.push(...newItems)
+
+  wrapper.setProps({ data })
+
+  // Ensure passedData is still original data
+  t.deepEqual(passedData, originalData)
+
+  t.is(passedDiff.added.length, 1)
+  t.deepEqual(passedDiff.added[0], newItems[0])
+
+  t.is(passedDiff.removed.length, 2)
+  t.deepEqual(passedDiff.removed[0], originalData[0])
+  t.deepEqual(passedDiff.removed[1], originalData[1])
+
+  t.is(passedDiff.total.changes, 3)
+  t.is(passedDiff.total.added, 1)
+  t.is(passedDiff.total.removed, 2)
+  t.is(passedDiff.total.updated, 0)
+})
+
+test('should correctly diff no change', (t) => {
+  const data = testData()
+  const originalData = clone(data)
+
+  let passedData = null
+  let passedDiff = null
+
+  const wrapper = shallow(
+    <DataDam data={data}>
+      {(data, diff) => {
+        // Take a copy of the data passed to us
+        passedData = clone(data)
+        passedDiff = diff
+      }}
+    </DataDam>
+  )
+
+  // Ensure data and passedData are now the same
+  t.deepEqual(passedData, data)
+
+  wrapper.setProps({ data })
+
+  // Ensure passedData is still original data
+  t.deepEqual(passedData, originalData)
+
+  t.deepEqual(passedDiff, NoDiff)
+})

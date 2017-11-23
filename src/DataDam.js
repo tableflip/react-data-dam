@@ -1,5 +1,6 @@
 import { Component } from 'react'
 import PropTypes from 'prop-types'
+import clone from 'clone'
 import { difference, NoDiff } from './diff'
 
 export default class DataDam extends Component {
@@ -15,13 +16,22 @@ export default class DataDam extends Component {
     idProp: '_id'
   }
 
-  state = { data: Array.from(this.props.data) }
-
-  componentWillReceiveProps (nextProps) {
-    if (nextProps.flowing) this.setState({ data: Array.from(nextProps.data) })
+  constructor (props) {
+    super(props)
+    this.state = { data: props.flowing ? props.data : clone(props.data) }
   }
 
-  release = () => this.setState({ data: Array.from(this.props.data) })
+  componentWillReceiveProps (nextProps) {
+    // If we start or continue flowing then use the passed data
+    if (nextProps.flowing) {
+      this.setState({ data: nextProps.data })
+    // ...otherwise if we stop flowing then take a copy of the data
+    } else if (!nextProps.flowing && this.props.flowing) {
+      this.setState({ data: clone(nextProps.data) })
+    }
+  }
+
+  release = () => this.setState({ data: clone(this.props.data) })
 
   render () {
     const { children, data: liveData, flowing, idProp } = this.props
