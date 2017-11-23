@@ -42,11 +42,11 @@ export default ({ items }) => (
 
 Type: `PropTypes.arrayOf(PropTypes.object).isRequired`
 
-The data you want to build a dam against. Only the initial value will be passed through to child components until `release` is called.
+The data you want to build a dam against. Only the initial value will be passed through to child components until [`release`](#children) is called.
 
-The `flowing` prop can be used to allow data through from initial mount to a time that you're ready to enforce the dam.
+The [`flowing`](#flowing) prop can be used to allow data through from initial mount to a time that you're ready to enforce the dam.
 
-Objects in the array should have an `_id` property to determine updates. This can be changed using the `idProp` prop.
+Objects in the array should have an `_id` property to determine updates. This can be changed using the [`idProp`](#idprop) prop.
 
 #### `children`
 
