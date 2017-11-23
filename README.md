@@ -2,7 +2,9 @@
 
 [![dependencies Status](https://david-dm.org/tableflip/react-data-dam/status.svg)](https://david-dm.org/tableflip/react-data-dam) [![JavaScript Style Guide](https://img.shields.io/badge/code_style-standard-brightgreen.svg)](https://standardjs.com)
 
-> Holds back your data until you're ready to see the updates.
+> Holds back your data until you're ready to see the updates. Useful for implementing a Twitter style "See n new Tweets" button.
+
+Initial data passed to `DataDam` will be passed onto it's children, but changes to that data are held back until the children signal that they want to receive it. Children are passed a diff object which describes the difference between the data they currently have and what is being held back so they know what they're missing.
 
 ## Install
 
@@ -31,6 +33,58 @@ export default ({ items }) => (
   </DataDam>
 )
 ```
+
+## API
+
+### `<DataDam />`
+
+#### `data`
+
+Type: `PropTypes.arrayOf(PropTypes.object).isRequired`
+
+The data you want to build a dam against. Only the initial value will be passed through to child components until `release` is called.
+
+The `flowing` prop can be used to allow data through from initial mount to a time that you're ready to enforce the dam.
+
+Objects in the array should have an `_id` property to determine updates. This can be changed using the `idProp` prop.
+
+#### `children`
+
+Type: `PropTypes.func.isRequired`
+
+A function that renders the children. It is passed 3 parameters:
+
+* `data` - the cached data since the last release or initial mount
+* `diff` - the difference between the passed data and the data that is being held back
+* `release` - a function to call that will release any data that is held back
+
+The diff object looks like this:
+
+```js
+{
+  added: [],
+  removed: [],
+  updated: [],
+  total: {
+    changes: 0,
+    added: 0,
+    removed: 0,
+    updated: 0
+  }
+}
+```
+
+#### `flowing`
+
+Type: `PropTypes.bool`, default: `false`
+
+Allow data to flow freely through the dam without needing to call release.
+
+#### `idProp`
+
+Type: `PropTypes.string`, default: `_id`
+
+Changes the property that is considered to be the ID of the data items.
 
 ---
 

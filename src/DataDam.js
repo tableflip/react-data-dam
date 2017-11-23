@@ -4,7 +4,7 @@ import { difference, NoDiff } from './diff'
 
 export default class DataDam extends Component {
   static propTypes = {
-    data: PropTypes.array.isRequired,
+    data: PropTypes.arrayOf(PropTypes.object).isRequired,
     children: PropTypes.func.isRequired,
     flowing: PropTypes.bool,
     idProp: PropTypes.string
