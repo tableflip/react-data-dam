@@ -23,9 +23,12 @@ export function difference (a, b, idProp = '_id') {
     const otherItems = items === added ? removed : added
 
     updated = items.reduce((items, item) => {
-      if (otherItems.find((otherItem) => eqlId(otherItem, item))) {
-        items.push(item)
+      const otherItem = otherItems.find((otherItem) => eqlId(otherItem, item))
+
+      if (otherItem) {
+        items.push(otherItems === added ? otherItem : item)
       }
+
       return items
     }, [])
 

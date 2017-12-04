@@ -311,3 +311,46 @@ test('should correctly diff no change', (t) => {
 
   t.deepEqual(passedDiff, NoDiff)
 })
+
+test('should contain new item in diff updates array', (t) => {
+  const data = testData()
+  const originalData = clone(data)
+
+  let passedData = null
+  let passedDiff = null
+
+  const wrapper = shallow(
+    <DataDam data={data}>
+      {(data, diff) => {
+        // Take a copy of the data passed to us
+        passedData = clone(data)
+        passedDiff = diff
+      }}
+    </DataDam>
+  )
+
+  // Ensure data and passedData are now the same
+  t.deepEqual(passedData, data)
+
+  const updatedName = `name${Date.now()}`
+
+  // Update the first item
+  data[0].name = updatedName
+
+  // Add new items, this ensures data-dam iterates over the removed array and
+  // so needs to pick the correct updated item to put in the diff.updated array
+  const newItems = [
+    { _id: `another1${Date.now()}`, name: 'Another 1' },
+    { _id: `another2${Date.now()}`, name: 'Another 2' }
+  ]
+
+  data.push(...newItems)
+
+  wrapper.setProps({ data })
+
+  // Ensure passedData is still original data
+  t.deepEqual(passedData, originalData)
+
+  t.is(passedDiff.updated.length, 1)
+  t.is(passedDiff.updated[0].name, updatedName)
+})
