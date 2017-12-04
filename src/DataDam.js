@@ -8,35 +8,44 @@ export default class DataDam extends Component {
     data: PropTypes.arrayOf(PropTypes.object).isRequired,
     children: PropTypes.func.isRequired,
     flowing: PropTypes.bool,
-    idProp: PropTypes.string
+    idProp: PropTypes.string,
+    autoRelease: PropTypes.func
   }
 
   static defaultProps = {
-    flowing: false,
     idProp: '_id'
   }
 
   constructor (props) {
     super(props)
-    this.state = { data: props.flowing ? props.data : clone(props.data) }
+    this.state = {
+      data: props.flowing ? props.data : clone(props.data),
+      diff: NoDiff
+    }
   }
 
   componentWillReceiveProps (nextProps) {
     // If we start or continue flowing then use the passed data
     if (nextProps.flowing) {
-      this.setState({ data: nextProps.data })
-    // ...otherwise if we stop flowing then take a copy of the data
+      this.setState({ data: nextProps.data, diff: NoDiff })
+    // ...else if we stop flowing then take a copy of the data
     } else if (!nextProps.flowing && this.props.flowing) {
-      this.setState({ data: clone(nextProps.data) })
+      this.setState({ data: clone(nextProps.data), diff: NoDiff })
+    // ...otherwise we continue not flowing, and need to recalc the diff
+    } else {
+      const diff = difference(this.state.data, nextProps.data, nextProps.idProp)
+
+      if (nextProps.autoRelease && nextProps.autoRelease(this.state.data, diff)) {
+        this.setState({ data: clone(nextProps.data), diff: NoDiff })
+      } else {
+        this.setState({ diff })
+      }
     }
   }
 
-  release = () => this.setState({ data: clone(this.props.data) })
+  release = () => this.setState({ data: clone(this.props.data), diff: NoDiff })
 
   render () {
-    const { children, data: liveData, flowing, idProp } = this.props
-    const { data } = this.state
-    const diff = flowing ? NoDiff : difference(data, liveData, idProp)
-    return children(data, diff, this.release)
+    return this.props.children(this.state.data, this.state.diff, this.release)
   }
 }

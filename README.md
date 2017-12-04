@@ -88,6 +88,15 @@ Type: `PropTypes.string`, default: `_id`
 
 Changes the property that is considered to be the ID of the data items.
 
+#### `autoRelease`
+
+Type: `PropTypes.func`
+
+Called each time the dam data changes. When this function returns `true` the dam data will be released. It is passed 2 parameters:
+
+* `data` - the cached data since the last release or initial mount
+* `diff` - the difference between the passed data and the data that is being held back
+
 ---
 
 A [(╯°□°）╯︵TABLEFLIP](https://tableflip.io) side project.

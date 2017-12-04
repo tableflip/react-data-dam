@@ -354,3 +354,37 @@ test('should contain new item in diff updates array', (t) => {
   t.is(passedDiff.updated.length, 1)
   t.is(passedDiff.updated[0].name, updatedName)
 })
+
+test('should automatically release when autoRelease test passes', (t) => {
+  const data = testData()
+  const originalData = clone(data)
+
+  let passedData = null
+
+  const wrapper = shallow(
+    <DataDam data={data} autoRelease={(_, diff) => diff.added.some((item) => item.doRelease)}>
+      {(data) => {
+        // Take a copy of the data passed to us
+        passedData = clone(data)
+      }}
+    </DataDam>
+  )
+
+  // Ensure data and passedData are now the same
+  t.deepEqual(passedData, data)
+
+  // Add a new item
+  data.push({ _id: `TEST${Date.now()}`, doRelease: false })
+
+  wrapper.setProps({ data })
+
+  // Ensure passedData is still original data
+  t.deepEqual(passedData, originalData)
+
+  // Add a new item (for autoRelease)
+  data.push({ _id: `TEST${Date.now()}`, doRelease: true })
+
+  wrapper.setProps({ data })
+
+  t.deepEqual(passedData, data)
+})
