@@ -25,22 +25,26 @@ export default class DataDam extends Component {
   }
 
   componentWillReceiveProps (nextProps) {
-    // If we start or continue flowing then use the passed data
-    if (nextProps.flowing) {
-      this.setState({ data: nextProps.data, diff: NoDiff })
-    // ...else if we stop flowing then take a copy of the data
-    } else if (!nextProps.flowing && this.props.flowing) {
-      this.setState({ data: clone(nextProps.data), diff: NoDiff })
-    // ...otherwise we continue not flowing, and need to recalc the diff
-    } else {
-      const diff = difference(this.state.data, nextProps.data, nextProps.idProp)
-
-      if (nextProps.autoRelease && nextProps.autoRelease(this.state.data, diff)) {
-        this.setState({ data: clone(nextProps.data), diff: NoDiff })
-      } else {
-        this.setState({ diff })
+    this.setState((state, props) => {
+      // If we start or continue flowing then use the passed data
+      if (nextProps.flowing) {
+        return { data: nextProps.data, diff: NoDiff }
       }
-    }
+
+      // ...else if we stop flowing then take a copy of the data
+      if (!nextProps.flowing && props.flowing) {
+        return { data: clone(nextProps.data), diff: NoDiff }
+      }
+
+      // ...otherwise we continue not flowing, and need to recalc the diff
+      const diff = difference(state.data, nextProps.data, nextProps.idProp)
+
+      if (nextProps.autoRelease && nextProps.autoRelease(state.data, diff)) {
+        return { data: clone(nextProps.data), diff: NoDiff }
+      }
+
+      return { diff }
+    })
   }
 
   release = () => this.setState({ data: clone(this.props.data), diff: NoDiff })
