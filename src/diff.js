@@ -23,13 +23,13 @@ export function difference (a, b, idProp = '_id') {
 }
 
 export const NoDiff = Object.freeze({
-  added: [],
-  removed: [],
-  updated: [],
-  total: {
+  added: Object.freeze([]),
+  removed: Object.freeze([]),
+  updated: Object.freeze([]),
+  total: Object.freeze({
     changes: 0,
     added: 0,
     removed: 0,
     updated: 0
-  }
+  })
 })
