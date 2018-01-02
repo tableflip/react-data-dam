@@ -39,7 +39,7 @@ export default class DataDam extends Component {
       if (diff.total.changes && autoRelease && autoRelease(this.state.data, diff, nextProps.data)) {
         this.setState({ data: clone(nextProps.data), diff: NoDiff })
       } else {
-        this.setState({ diff })
+        this.setState({ data: this.state.data, diff })
       }
     }
   }
