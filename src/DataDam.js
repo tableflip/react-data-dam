@@ -1,6 +1,6 @@
 import { Component } from 'react'
 import PropTypes from 'prop-types'
-import clone from 'clone'
+import clone from 'clone-deep'
 import { difference, NoDiff } from './diff'
 
 export default class DataDam extends Component {

@@ -29,7 +29,7 @@
   },
   "homepage": "https://github.com/tableflip/react-data-dam#readme",
   "dependencies": {
-    "clone": "^2.1.1",
+    "clone-deep": "^2.0.1",
     "fast-deep-equal": "^1.0.0",
     "prop-types": "^15.6.0"
   },
