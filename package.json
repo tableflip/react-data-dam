@@ -1,6 +1,6 @@
 {
   "name": "react-data-dam",
-  "version": "3.2.2",
+  "version": "4.0.0",
   "description": "Holds back your data until you're ready to see the updates.",
   "main": "lib/index.js",
   "scripts": {
