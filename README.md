@@ -98,6 +98,14 @@ Called each time the held back data changes. When this function returns `true` t
 * `diff` - the difference between the passed data and the data that is being held back
 * `nextData` - the data that is being held back
 
+## Contribute
+
+Feel free to dive in! [Open an issue](https://github.com/tableflip/react-data-dam/issues/new) or submit PRs.
+
+## License
+
+[MIT](LICENSE) © Alan Shaw
+
 ---
 
 A [(╯°□°）╯︵TABLEFLIP](https://tableflip.io) side project.
