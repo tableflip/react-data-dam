@@ -181,10 +181,15 @@ test('should correctly diff 1 add, 1 delete and 1 update', (t) => {
   t.is(passedDiff.updated.length, 1)
   t.deepEqual(passedDiff.updated[0], data[0])
 
+  t.is(passedDiff.moved.length, 2)
+  t.deepEqual(passedDiff.moved[0], data[0])
+  t.deepEqual(passedDiff.moved[1], data[1])
+
   t.is(passedDiff.total.changes, 3)
   t.is(passedDiff.total.added, 1)
   t.is(passedDiff.total.removed, 1)
   t.is(passedDiff.total.updated, 1)
+  t.is(passedDiff.total.moved, 2)
 })
 
 test('should correctly diff 2 adds and 1 delete', (t) => {
@@ -210,7 +215,7 @@ test('should correctly diff 2 adds and 1 delete', (t) => {
   // Remove the first item
   data.splice(0, 1)
 
-  // Add a new item
+  // Add new items
   const newItems = [
     { _id: `another1${Date.now()}`, name: 'Another 1' },
     { _id: `another2${Date.now()}`, name: 'Another 2' }
@@ -230,10 +235,15 @@ test('should correctly diff 2 adds and 1 delete', (t) => {
   t.is(passedDiff.removed.length, 1)
   t.deepEqual(passedDiff.removed[0], originalData[0])
 
+  t.is(passedDiff.moved.length, 2)
+  t.deepEqual(passedDiff.moved[0], data[0])
+  t.deepEqual(passedDiff.moved[1], data[1])
+
   t.is(passedDiff.total.changes, 3)
   t.is(passedDiff.total.added, 2)
   t.is(passedDiff.total.removed, 1)
   t.is(passedDiff.total.updated, 0)
+  t.is(passedDiff.total.moved, 2)
 })
 
 test('should correctly diff 1 add and 2 deletes', (t) => {
@@ -278,10 +288,14 @@ test('should correctly diff 1 add and 2 deletes', (t) => {
   t.deepEqual(passedDiff.removed[0], originalData[0])
   t.deepEqual(passedDiff.removed[1], originalData[1])
 
+  t.is(passedDiff.moved.length, 1)
+  t.deepEqual(passedDiff.moved[0], data[0])
+
   t.is(passedDiff.total.changes, 3)
   t.is(passedDiff.total.added, 1)
   t.is(passedDiff.total.removed, 2)
   t.is(passedDiff.total.updated, 0)
+  t.is(passedDiff.total.moved, 1)
 })
 
 test('should correctly diff no change', (t) => {
@@ -387,4 +401,46 @@ test('should automatically release when autoRelease test passes', (t) => {
   wrapper.setProps({ data })
 
   t.deepEqual(passedData, data)
+})
+
+test('should calculate incremental diff', (t) => {
+  const data = testData()
+  const originalData = clone(data)
+
+  let passedData = null
+
+  // Releases when the incremental diff reports 0 changes and 4 moves
+  const autoRelease = (data, diff, nextData, incrementalDifference) => {
+    const incDiff = incrementalDifference()
+    return incDiff.total.changes === 0 && incDiff.total.moved === 4
+  }
+
+  const wrapper = shallow(
+    <DataDam data={data} autoRelease={autoRelease}>
+      {(data) => {
+        // Take a copy of the data passed to us
+        passedData = clone(data)
+      }}
+    </DataDam>
+  )
+
+  // Ensure data and passedData are now the same
+  t.deepEqual(passedData, data)
+
+  // Add a new item
+  data.push({ _id: `TEST${Date.now()}`, name: `TEST${Date.now()}` })
+
+  // Update the first item
+  data[0].name = `name${Date.now()}`
+
+  wrapper.setProps({ data })
+
+  // Ensure passedData is still original data
+  t.deepEqual(passedData, originalData)
+
+  const reversedData = Array.from(data).reverse()
+
+  wrapper.setProps({ data: reversedData })
+
+  t.deepEqual(passedData, reversedData)
 })

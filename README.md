@@ -94,11 +94,12 @@ Changes the property that is considered to be the ID of the data items.
 
 Type: `PropTypes.func`
 
-Called each time the held back data changes. When this function returns `true` the held back data will be released. It is passed 3 parameters:
+Called each time the held back data changes. When this function returns `true` the held back data will be released. It is passed 4 parameters:
 
 * `data` - the cached data since the last release or initial mount
 * `diff` - the difference between the passed data and the data that is being held back
 * `nextData` - the data that is being held back
+* `incrementalDifference` - a function you can call to calculate the incremental diff, which is the difference between the previous `nextData` and the new `nextData`
 
 ---
 

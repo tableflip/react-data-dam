@@ -34,9 +34,10 @@ export default class DataDam extends Component {
     // ...otherwise we continue not flowing, and need to recalc the diff
     } else if (!nextProps.flowing) {
       const diff = difference(this.state.data, nextProps.data, nextProps.idProp)
-      const { autoRelease } = nextProps
+      const didChangeOrMove = diff.total.changes || diff.total.moved
+      const incrementalDifference = () => difference(this.props.data, nextProps.data, nextProps.idProp)
 
-      if (diff.total.changes && autoRelease && autoRelease(this.state.data, diff, nextProps.data)) {
+      if (didChangeOrMove && nextProps.autoRelease && nextProps.autoRelease(this.state.data, diff, nextProps.data, incrementalDifference)) {
         this.setState({ data: clone(nextProps.data), diff: NoDiff })
       } else {
         this.setState({ data: this.state.data, diff })
