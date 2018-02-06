@@ -29,12 +29,12 @@
   },
   "homepage": "https://github.com/tableflip/react-data-dam#readme",
   "dependencies": {
-    "clone-deep": "^2.0.1",
+    "clone-deep": "^3.0.1",
     "fast-deep-equal": "^1.0.0",
     "prop-types": "^15.6.0"
   },
   "devDependencies": {
-    "ava": "^0.23.0",
+    "ava": "^0.25.0",
     "babel-cli": "^6.26.0",
     "babel-eslint": "^8.0.2",
     "babel-preset-env": "^1.6.1",
