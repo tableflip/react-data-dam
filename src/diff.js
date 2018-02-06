@@ -9,6 +9,17 @@ export function difference (a, b, idProp = '_id') {
     // All b items who also exist in a, what aren't deepEqual to each other
     updated: b.filter((bItem) => {
       return a.some((aItem) => aItem[idProp] === bItem[idProp] && !deepEqual(aItem, bItem))
+    }),
+    // Items in a that also exist in b, that aren't at the same index
+    moved: b.reduce((moved, bItem, index) => {
+      const aItem = a[index]
+      const bItemIndex = b.findIndex(bItem => aItem[idProp] === bItem[idProp])
+
+      if (aItem && aItem[idProp] === bItem[idProp]) {
+        return moved
+      }
+
+      return moved.concat(bItem)
     })
   }
 

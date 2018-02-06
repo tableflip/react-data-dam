@@ -64,14 +64,16 @@ The diff object looks like this:
 
 ```js
 {
-  added: [],
-  removed: [],
-  updated: [],
+  added: [], // items that were added to data
+  removed: [], // items that were removed from data
+  updated: [],  // items that remained in data but were altered in some way
+  moved: [], // items that changed index
   total: {
-    changes: 0,
+    changes: 0, // added + removed + updated
     added: 0,
     removed: 0,
-    updated: 0
+    updated: 0,
+    moved: 0
   }
 }
 ```
