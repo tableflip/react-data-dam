@@ -35,7 +35,11 @@ export default class DataDam extends Component {
     } else if (!nextProps.flowing) {
       const diff = difference(this.state.data, nextProps.data, nextProps.idProp)
       const didChangeOrMove = diff.total.changes || diff.total.moved
-      const incrementalDifference = () => difference(this.props.data, nextProps.data, nextProps.idProp)
+
+      const incrementalDifference = () => {
+        incrementalDifference.__diff = incrementalDifference.__diff || difference(this.props.data, nextProps.data, nextProps.idProp)
+        return incrementalDifference.__diff
+      }
 
       if (didChangeOrMove && nextProps.autoRelease && nextProps.autoRelease(this.state.data, diff, nextProps.data, incrementalDifference)) {
         this.setState({ data: clone(nextProps.data), diff: NoDiff })
